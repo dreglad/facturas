@@ -1,0 +1,15 @@
+# Python
+__pycache__
+*.py[cod]
+pip-log.txt
+src/
+
+# Django local settings
+local_settings.py
+
+# Vagrant
+.vagrant/
+/*.log
+
+# OSX
+.DS_Store

@@ -1,0 +1,52 @@
+---
+# Facturas playbook
+- hosts: default
+
+  tasks:
+    - name: Paquetes APT actualizados
+      apt: update_cache=yes upgrade=dist
+
+    - name: Paquetes APT requeridos instalados
+      apt: pkg={{ item }}
+      with_items:
+        - git
+        - libjpeg-dev
+        - libxml2-dev
+        - libxslt-dev
+        - libyaml-dev
+        - python3-dev
+        - python3-lxml
+        - python3-pip
+        - python3-tk
+        - redis-server
+
+    - name: Instalar supervisor
+      apt: pkg=supervisor
+      notify: Habilitar supervisor
+
+    - meta: flush_handlers
+
+    - name: pip actualizado a la última versión
+      pip: executable=pip3 name=pip state=latest
+
+    - name: Paquetes Python requeridos instalados y actualizados
+      pip: executable=pip3 requirements=/vagrant/requirements.txt state=latest
+
+    - name: Celery worker supervisado
+      copy: src=files/supervisor-worker.conf dest=/etc/supervisor/conf.d/worker.conf
+      notify: Reiniciar supervisor
+
+    - name: Mailserver supervisado
+      copy: src=files/supervisor-mailserver.conf dest=/etc/supervisor/conf.d/mailserver.conf
+      notify: Reiniciar supervisor
+
+    - name: Webserver supervisado
+      copy: src=files/supervisor-webserver.conf dest=/etc/supervisor/conf.d/webserver.conf
+      notify: Reiniciar supervisor
+
+  handlers:
+    - name: Habilitar supervisor
+      shell: systemctl enable supervisor && systemctl start supervisor
+
+    - name: Reiniciar supervisor
+      shell: systemctl start supervisor && /etc/init.d/supervisor reload && sudo supervisorctl reread

@@ -1,0 +1,11 @@
+-e git+https://github.com/LinuxCabal/admin-cfdi.git#egg=admin-cfdi
+
+celery[redis]
+coreapi
+Django
+django-crispy-forms
+django-filter
+django-guardian
+django-localflavor
+djangorestframework
+Markdown
