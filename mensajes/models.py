@@ -11,7 +11,7 @@ class Remitente(models.Model):
 
 class Destinatario(models.Model):
     direccion = models.EmailField('dirección', max_length=255, primary_key=True)
-    cliente = models.ForeignKey('facturas.Cliente', blank=True)
+    cliente = models.ForeignKey('facturas.Cliente', blank=True, null=True)
 
     def __str__(self):
         return self.direccion

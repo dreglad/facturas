@@ -18,18 +18,18 @@ class ClienteAdmin(admin.ModelAdmin):
 
 @admin.register(Contribuyente)
 class Contribuyente(admin.ModelAdmin):
-    list_display = ('rfc', 'cliente')
+    list_display = ('rfc', 'nombre', 'cliente')
     list_filter = ('cliente',)
 
 
 @admin.register(Comprobante)
 class ComprobanteAdmin(admin.ModelAdmin):
-    list_display = (
-        '_sello', 'emisor_rfc', 'emisor_nombre', 'receptor_rfc',
-        'receptor_nombre', 'total',
+    list_display = ('_sello', 'emisor', 'receptor', 'total')
+    list_filter = (
+        ('emisor', admin.RelatedOnlyFieldListFilter),
+        ('receptor', admin.RelatedOnlyFieldListFilter),
     )
     readonly_except = ('cliente',)
-    list_filter = ('cliente', 'emisor_rfc', 'receptor_rfc')
     exclude = []
     can_add = False
     can_delete = False
