@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from email import message_from_string
 import logging
+from datetime import datetime
 
 from admincfdi.pyutil import ValidCFDI, Global
 from celery import shared_task
@@ -54,10 +55,12 @@ def buscar_comprobante(adjunto_pk):
                 emisor.save()
                 logger.debug("Emisor no registrado, se registró nuevo Contribuyente: %s", emisor)
 
-            if not Comprobante.objects.filter(sello=cfdi.attrib['sello']).exists():
+            timbre = cfdi.Complemento.find('{http://www.sat.gob.mx/TimbreFiscalDigital}TimbreFiscalDigital').attrib
+            if not Comprobante.objects.filter(uuid=timbre['UUID']).exists():
                 comp = Comprobante(
                     emisor=emisor, receptor=receptor, adjunto_xml=adjunto,
-                    sello=cfdi.attrib['sello'], total=cfdi.attrib['total']
+                    uuid=timbre['UUID'], total=cfdi.attrib['total'],
+                    fecha_timbrado=datetime.strptime(cfdi.attrib['fecha'], "%Y-%m-%dT%H:%M:%S")
                     )
                 comp.save()
             else:

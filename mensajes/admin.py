@@ -9,11 +9,12 @@ from .models import Adjunto, Destinatario, Mensaje, Remitente
 @admin.register(Adjunto)
 class AdjuntoAdmin(admin.ModelAdmin):
     list_display = ('pk', 'archivo', 'tipo', 'mensaje', 'utilizado')
+    readonly_except = ('utilizado',)
     can_add = False
     can_delete = False
 
     def get_readonly_fields(self, request, obj=None):
-        return [f.name for f in self.model._meta.fields]
+        return [f.name for f in self.model._meta.fields if f.name not in self.readonly_except]
 
 
 class AdjuntoInline(admin.TabularInline):
@@ -21,7 +22,7 @@ class AdjuntoInline(admin.TabularInline):
     can_delete = False
     can_add = False
     extra = 0
-    readonly_fields = ['archivo', 'tipo', 'utilizado']
+    readonly_fields = ['archivo', 'tipo']
 
 @admin.register(Mensaje)
 class MensajeAdmin(admin.ModelAdmin):

@@ -17,19 +17,20 @@ class ClienteAdmin(admin.ModelAdmin):
 
 
 @admin.register(Contribuyente)
-class Contribuyente(admin.ModelAdmin):
+class ContribuyenteAdmin(admin.ModelAdmin):
     list_display = ('rfc', 'nombre', 'cliente')
     list_filter = ('cliente',)
 
 
 @admin.register(Comprobante)
 class ComprobanteAdmin(admin.ModelAdmin):
-    list_display = ('_sello', 'emisor', 'receptor', 'total')
+    list_display = ('uuid', 'emisor', 'receptor', 'fecha_timbrado', 'total')
     list_filter = (
+        'fecha_timbrado',
         ('emisor', admin.RelatedOnlyFieldListFilter),
         ('receptor', admin.RelatedOnlyFieldListFilter),
     )
-    readonly_except = ('cliente',)
+    readonly_except = []
     exclude = []
     can_add = False
     can_delete = False
@@ -37,5 +38,3 @@ class ComprobanteAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         return [f.name for f in self.model._meta.fields if f.name not in self.exclude and f.name not in self.readonly_except]
 
-    def _sello(self, obj):
-        return obj.sello[:15] + '...'

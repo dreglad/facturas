@@ -23,12 +23,13 @@ class Contribuyente(models.Model):
 
 class Comprobante(models.Model):
     fecha_creacion = models.DateTimeField('Fecha de creación', auto_now_add=True)
-    sello = models.CharField(max_length=255, db_index=True)
+    uuid = models.CharField(max_length=64, db_index=True)
     total = models.DecimalField(max_digits=9, decimal_places=3)
     emisor = models.ForeignKey('Contribuyente', related_name="comprobantes_emitidos")
     receptor = models.ForeignKey('Contribuyente', related_name="comprobantes_recibidos")
     adjunto_xml = models.ForeignKey('mensajes.Adjunto', related_name="comprobantes_xml", verbose_name='XML Adjunto')
     adjunto_pdf = models.ForeignKey('mensajes.Adjunto', related_name="comprobantes_pdf", null=True, blank=True, verbose_name='PDF Adjunto')
+    fecha_timbrado = models.DateTimeField('Fecha de timbrado')
     fecha_validacion = models.DateTimeField('Fecha de validación', blank=True, null=True)
 
     def __str__(self):
